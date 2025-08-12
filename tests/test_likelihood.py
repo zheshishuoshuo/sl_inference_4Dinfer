@@ -5,9 +5,10 @@ import numpy as np
 # Ensure parent directory (containing package) is on path
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from sl_inference_only_muDMalpha.mock_generator.mock_generator import run_mock_simulation
-from sl_inference_only_muDMalpha.make_tabulate import tabulate_likelihood_grids
-from sl_inference_only_muDMalpha.likelihood import log_likelihood
+from sl_inference_4Dinfer.mock_generator.mock_generator import run_mock_simulation
+from sl_inference_4Dinfer.make_tabulate import tabulate_likelihood_grids
+from sl_inference_4Dinfer.likelihood import log_likelihood
+from sl_inference_4Dinfer.mock_generator.mass_sampler import MODEL_PARAMS
 
 
 def test_log_likelihood_runs():
@@ -18,5 +19,7 @@ def test_log_likelihood_runs():
     grids = tabulate_likelihood_grids(mock_obs, logMh_grid)
     logM_obs = mock_obs["logM_star_sps_observed"].values
 
-    ll = log_likelihood((12.5, 0.1), grids, logM_obs)
+    model_p = MODEL_PARAMS["deVauc"]
+    theta = (12.5, model_p["beta_h"], model_p["sigma_h"], 0.1)
+    ll = log_likelihood(theta, grids, logM_obs)
     assert np.isfinite(ll)
