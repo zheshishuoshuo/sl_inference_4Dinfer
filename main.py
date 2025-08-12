@@ -23,9 +23,7 @@ def main() -> None:
 
     # Generate a reasonably sized mock sample so that running this script is
     # fast but still demonstrates the full workflow.
-    df_lens, mock_lens_data, mock_observed_data = run_mock_simulation(
-        1000, logalpha=logalpha, seed=np.random.randint(0, 10000), nbkg=4e-4, if_source=True
-    )
+    df_lens, mock_lens_data, mock_observed_data = run_mock_simulation(70000, logalpha=logalpha, seed=np.random.randint(0, 10000), nbkg=4e-4, if_source=True)
     print(np.mean(mock_lens_data["logM_halo"].values))
     logM_sps_obs = mock_observed_data["logM_star_sps_observed"].values
 

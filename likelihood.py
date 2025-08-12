@@ -48,13 +48,18 @@ def log_prior(theta: Sequence[float]) -> float:
 
     muDM, betaDM, sigmaDM, alpha = theta
     if not (
-        10.0 < muDM < 16.0
-        and 0.0 < betaDM < 5.0
-        and 0.0 < sigmaDM < 2.0
-        and -0.5 < alpha < 1.0
+        12.6 < muDM < 13.2
+        and 1.8 < betaDM < 2.2
+        and 0.27 < sigmaDM < 0.47
+        and 0.1 < alpha < 0.2
     ):
         return -np.inf
     return 0.0
+
+    # mu_DM_grid = np.linspace(12.6, 13.2, 30)
+    # beta_DM_grid = np.linspace(1.8, 2.2, 10)
+    # sigma_DM_grid = np.linspace(0.27, 0.47, 10)
+    # alpha_grid = np.linspace(0.1, 0.2, 50)
 
 
 # Single-lens integral -------------------------------------------------------

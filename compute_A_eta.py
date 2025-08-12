@@ -155,9 +155,9 @@ def build_eta_grid():
     """Return default grids for ``mu_DM``, ``beta_DM``, ``sigma_DM`` and ``alpha``."""
 
     mu_DM_grid = np.linspace(12.6, 13.2, 30)
-    beta_DM_grid = np.linspace(1.8, 2.2, 10)
-    sigma_DM_grid = np.linspace(0.27, 0.47, 10)
-    alpha_grid = np.linspace(0.1, 0.2, 50)
+    beta_DM_grid = np.linspace(1.8, 2.2, 30)
+    sigma_DM_grid = np.linspace(0.27, 0.47, 30)
+    alpha_grid = np.linspace(0.1, 0.2, 200)
     return mu_DM_grid, beta_DM_grid, sigma_DM_grid, alpha_grid
 
 # 'mu_h0': 12.91,
@@ -265,7 +265,7 @@ def compute_A_eta(
             "A": A.ravel(),
         }
     )
-    path = os.path.join(os.path.dirname(__file__), "A_eta_table_alpha.csv")
+    path = os.path.join(os.path.dirname(__file__), "A_eta_table_alpha_precise.csv")
     df.to_csv(path, index=False)
     return df
 
