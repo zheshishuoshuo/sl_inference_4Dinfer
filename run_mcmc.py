@@ -10,7 +10,6 @@ sampler object from :mod:`emcee` can then be further analysed.
 
 from __future__ import annotations
 
-import os
 import multiprocessing as mp
 from pathlib import Path
 
@@ -44,8 +43,8 @@ def run_mcmc(
     nwalkers, nsteps:
         MCMC configuration.
     initial_guess:
-        Initial position of the walkers in parameter space.  Must have length 2
-        corresponding to ``(muDM, alpha)``.
+        Initial position of the walkers in parameter space.  Must have length 4
+        corresponding to ``(muDM, betaDM, sigmaDM, alpha)``.
     backend_file:
         Filename or path for the HDF5 backend.  If a relative path is
         supplied, the file will be placed inside the ``chains`` directory.  The
@@ -83,9 +82,12 @@ def run_mcmc(
     # return sampler
 
 
-    ndim = 2
+    # Number of parameters in the posterior: ``muDM``, ``betaDM``, ``sigmaDM``
+    # and ``alpha``.
+    ndim = 4
     if initial_guess is None:
-        initial_guess = np.array([12.5, 0.1])
+        # A sensible starting point close to the Sonnenfeld+2019 values.
+        initial_guess = np.array([12.5, 2.0, 0.3, 0.1])
 
     # === 使用 pathlib 构建路径 ===
     base_dir = Path(__file__).parent.resolve()
