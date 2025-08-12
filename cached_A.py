@@ -4,7 +4,7 @@ import pandas as pd
 from scipy.interpolate import RegularGridInterpolator
 
 
-def load_A_interpolator(filename: str = "A_eta_table_alpha0.01.csv") -> RegularGridInterpolator:
+def load_A_interpolator(filename: str = "A_eta_table_alpha.csv") -> RegularGridInterpolator:
     """Load the pre-computed A(eta) table and return an interpolator.
 
     The table must contain the columns ``mu_DM``, ``beta_DM``, ``sigma_DM`` and
@@ -40,7 +40,7 @@ def load_A_interpolator(filename: str = "A_eta_table_alpha0.01.csv") -> RegularG
 
 # Load default interpolator ----------------------------------------------------
 A_interp = load_A_interpolator(
-    os.path.join(os.path.dirname(__file__), "A_eta_table_alpha0.01.csv")
+    os.path.join(os.path.dirname(__file__), "A_eta_table_alpha.csv")
 )
 
 

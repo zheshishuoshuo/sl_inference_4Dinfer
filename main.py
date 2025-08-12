@@ -5,23 +5,27 @@ import seaborn as sns
 import pandas as pd
 import multiprocessing as mp
 from .mock_generator.mock_generator import run_mock_simulation
-# from .mock_generator.mock_generator import run_mock_simulation
+from .mock_generator.mass_sampler import MODEL_PARAMS
 from .make_tabulate import tabulate_likelihood_grids
-# from .likelihood import log_likelihood
-# from .likelihood import precompute_grids
 from .run_mcmc import run_mcmc
-from .config import SCATTER
 import matplotlib.pyplot as plt
 import matplotlib
-import os 
+import os
+
 matplotlib.use("TkAgg")  # 或者 Qt5Agg, MacOSX
 
 def main() -> None:
     # os.remove(os.path.join(os.path.dirname(__file__), "chains", "chains.h5")) if os.path.exists(os.path.join(os.path.dirname(__file__), "chains", "chains.h5")) else None
     # Generate mock data for samples with fixed logalpha
     # mock_lens_data, mock_observed_data = run_mock_simulation(300, logalpha=0.1)
-    logalpha =0.15
-    df_lens, mock_lens_data, mock_observed_data = run_mock_simulation(10000, logalpha=logalpha, seed=np.random.randint(0, 10000), nbkg=4e-4, if_source=True)
+    logalpha = 0.15
+    model_p = MODEL_PARAMS["deVauc"]
+
+    # Generate a reasonably sized mock sample so that running this script is
+    # fast but still demonstrates the full workflow.
+    df_lens, mock_lens_data, mock_observed_data = run_mock_simulation(
+        1000, logalpha=logalpha, seed=np.random.randint(0, 10000), nbkg=4e-4, if_source=True
+    )
     print(np.mean(mock_lens_data["logM_halo"].values))
     logM_sps_obs = mock_observed_data["logM_star_sps_observed"].values
 
@@ -29,29 +33,27 @@ def main() -> None:
 
     # Precompute grids on halo mass
     logMh_grid = np.linspace(11.0, 15.0, 300)
-    # grids = precompute_grids(mock_observed_data, logMh_grid, sigma_m=SCATTER.mag)
     grids = tabulate_likelihood_grids(mock_observed_data, logMh_grid)
-    logM_sps_obs = mock_observed_data["logM_star_sps_observed"].values
+
     nsteps = 5000
-    # Run MCMC sampling for 10000 steps
     sampler = run_mcmc(
         grids,
         logM_sps_obs,
         nsteps=nsteps,
         nwalkers=20,
-        initial_guess=np.array([12.6, 0.2]),
+        initial_guess=np.array([12.6, model_p["beta_h"], model_p["sigma_h"], 0.2]),
         backend_file="chains_0.01_0.15.h5",
         parallel=True,
         nproc=mp.cpu_count() - 3,
     )
-    chain = sampler.get_chain(discard=nsteps-2000, flat=True)
+    chain = sampler.get_chain(discard=nsteps - 2000, flat=True)
     print("MCMC sampling completed.")
 
     samples = chain.reshape(-1, chain.shape[-1])
 
     # 转为 DataFrame 并加上列名
     # param_names = ["param1", "param2", "param3", "param4", "param5"]  # 你可以改成实际参数名
-    param_names = [r"$\mu_{DM}$", r"$\alpha$"]
+    param_names = [r"$\mu_{DM}$", r"$\beta_{DM}$", r"$\sigma_{DM}$", r"$\alpha$"]
 
     df_samples = pd.DataFrame(samples, columns=param_names)
 
@@ -65,7 +67,7 @@ def main() -> None:
     # )
 
     # 真值
-    true_values = [12.91, logalpha]
+    true_values = [model_p["mu_h0"], model_p["beta_h"], model_p["sigma_h"], logalpha]
 
     # 绘制 pairplot
     g = sns.pairplot(
