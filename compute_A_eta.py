@@ -154,15 +154,19 @@ def ms_distribution(ms_grid: np.ndarray, alpha_s: float = -1.3, ms_star: float =
 def build_eta_grid():
     """Return default grids for ``mu_DM``, ``beta_DM``, ``sigma_DM`` and ``alpha``."""
 
-    mu_DM_grid = np.linspace(12.5, 13.5, 25)
-    beta_DM_grid = np.linspace(0.5, 3.0, 5)
-    sigma_DM_grid = np.linspace(0.1, 0.6, 5)
-    alpha_grid = np.linspace(0.0, 0.5, 25)
+    mu_DM_grid = np.linspace(12.6, 13.2, 30)
+    beta_DM_grid = np.linspace(1.8, 2.2, 10)
+    sigma_DM_grid = np.linspace(0.27, 0.47, 10)
+    alpha_grid = np.linspace(0.1, 0.2, 50)
     return mu_DM_grid, beta_DM_grid, sigma_DM_grid, alpha_grid
 
+# 'mu_h0': 12.91,
+# 'beta_h': 2.04,
+# 'xi_h': 0.0,
+# 'sigma_h': 0.37
 
 def compute_A_eta(
-    n_samples: int = 20000,
+    n_samples: int = 5000,
     ms_points: int = 100,
     m_lim: float = 26.5,
     n_jobs: int | None = None,
@@ -261,7 +265,7 @@ def compute_A_eta(
             "A": A.ravel(),
         }
     )
-    path = os.path.join(os.path.dirname(__file__), "A_eta_table_alpha0.01.csv")
+    path = os.path.join(os.path.dirname(__file__), "A_eta_table_alpha.csv")
     df.to_csv(path, index=False)
     return df
 
